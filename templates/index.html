@@ -1,0 +1,34 @@
+The total number of reviews is {{ count }}.
+<hr>
+{% for message in messages %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 5%;"><i>Reviewer:</i></th>
+                <th style="width: 10%;"><i>The Book:</i></th>
+                <th style="width: 10%;"><i>The Author:</i></th>
+                <th style="width: 10%;"><i>Time:</i></th>
+                <th style="width: 5%;"><i>Rating:</i></th>
+                <th><i>Review:</i></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ message[0] }}</td>
+                <td>{{ message[3] }}</td>
+                <td>{{ message[2] }}</td>
+                <td>{{ message[5].strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                <td>{{ message[1] }}</td>
+                <td>{{ message[4] }}</td>
+            </tr>
+        </tbody>
+    </table>
+<hr>
+{% endfor %}
+{% if session.user_id %}
+You are logged in.
+{% else %}
+<a href="/login">Login</a>
+{% endif %}
+<a href="/new">Send a new review.</a>
+<a href="/logout">Logout</a>

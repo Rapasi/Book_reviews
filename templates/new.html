@@ -1,0 +1,48 @@
+<html>
+<head>
+  <style>
+    .textarea-container {
+      display: inline-block;
+      margin-right: 20px;
+    }
+    .select-container {
+      display: inline-block;
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<form action="/send" method="POST">
+  <div class="textarea-container">
+    The book: <br>
+    <textarea name="book_content" rows="1" cols="20"></textarea>
+  </div>
+  <div class="select-container">
+    Rating: <br>
+    <select name="book_rating">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+  <br><br>
+  <div class="textarea-container">
+    The author: <br>
+    <textarea name="author_content" rows="1" cols="20"></textarea>
+  </div>
+  <br><br>
+  <div class="textarea-container">
+    Review: <br>
+    <textarea name="free_review" rows="4" cols="50"></textarea>
+  </div>
+  <br>
+  <input type="submit" value="Lähetä">
+</form>
+
+</body>
+</html>
+
+
