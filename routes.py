@@ -66,7 +66,21 @@ def index():
 @app.route("/new")
 def new():
     allow = False
-    return render_template("new.html")
+    try:
+        if users.is_admin():
+            allow = True
+        elif users.is_user() and users.user_id() == session.get("user_id", None):
+            allow = True
+    except KeyError:
+        pass  
+
+    if allow:
+        print("Allow")
+        return render_template("new.html")
+    else:
+        error="missing_user"
+        print("Not allowed")  
+        return render_template("error.html", error=error, error_message="No rights for this page. Please login to add reviews.")
 
 @app.route("/send", methods=["POST"])
 def send():
@@ -74,6 +88,9 @@ def send():
     book_rating = request.form.get("book_rating")
     author_content = request.form.get("author_content")
     review = request.form.get("free_review")
+    if len(review)>500:
+        error="over_max_length"
+        return render_template("error.html",error=error,error_message="Review is too long. The maximum legth is 500 characters.")
     user_id=session["user_id"]
     now=datetime.now() 
     sql = "INSERT INTO reviews (book_name,book_author,user_id,review_time,review_text,rating) VALUES (:book_content, :author_content,:user_id,NOW(),:review,:book_rating)"

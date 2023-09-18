@@ -1,0 +1,15 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+    <h1>Error</h1>
+    <p>{{ error_message }}</p> 
+    {% if error == "missing_user" %}
+    <a href="/login">Login</a>
+    {% elif error == "over_max_length" %}
+    <a href="/new">Back to review.</a>
+    {% endif %}
+</body>
+</html>

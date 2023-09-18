@@ -22,3 +22,22 @@ def logout():
     del session["user_id"]
     del session["user_name"]
     del session["user_role"]
+
+def is_admin():
+    try:
+        return (session["user_id"] is 0)
+    except KeyError:
+        return False
+
+def is_user():
+    try:
+        return (session["user_id"] is 1)
+    except KeyError:
+        return False
+
+
+def user_id():
+    try:
+        return session["user_id"]
+    except KeyError:
+        return False
