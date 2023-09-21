@@ -61,7 +61,7 @@ def create_user():
 def index():
     result = db.session.execute(text("SELECT * FROM reviews"))
     reviews = result.fetchall()
-    return render_template("index.html", count=len(reviews), messages=get_list()) 
+    return render_template("index.html", count=len(reviews), messages=get_list(5)) 
 
 @app.route("/new")
 def new():
