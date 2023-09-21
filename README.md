@@ -4,4 +4,17 @@
 - User can also edit edit and delete their own messages.  
 - A user can find books for example using their name or author.
 - A user can see the most reviwed books or the books with the best overall ratings.
-- An administrator can delete reviews (written reviews). 
+- An administrator can delete reviews (written reviews).
+
+### This project is not on Fly.io so please run it locally.
+- Clone the repository to any directory on your computer.
+- Navigate to that directory and create a new test environment using "python3 -m venv test". Then activate the environment using "source test/bin/activate".
+- Use "pip install -r requirements.txt" to install required dependencies.
+- Create a new database using and add tables using "psql -d <tietokannan-nimi> < schema.sql".
+- Create a .env file inside cloned repository and add DATABASE_URL and SECRET_KEY variables. DATABASE_URL should be the same you used for your project. For example DATABASE_URL=postgresql:///user. Depending on your PosgoreSQL installation it can be something different. This works for me DATABASE_URL=postgresql://username:password@localhost/database_name. The SECRET_KEY should be created using instruction on https://hy-tsoha.github.io/materiaali/osa-2/#istunnot-ja-kirjautuminen. Please also read the instructions on https://hy-tsoha.github.io/materiaali/vertaisarviointi/.
+- After these step the app can be run from terminal using "flask run".
+
+### Currently implemented features:
+- User can create an account.
+- User can leave a review if they are logged in.
+- The 5 most resent reviews are displayed on the front page (This is empty if no reviews are added to left).
