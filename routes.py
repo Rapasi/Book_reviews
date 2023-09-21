@@ -13,6 +13,7 @@ from reviews import get_list
 @app.route("/login", methods=["get", "post"])
 def login():
     if request.method == "GET":
+        print(session['username'])
         return render_template("login.html")
     if request.method == "POST":
         username = request.form["username"]
@@ -52,7 +53,7 @@ def create_user():
         db.session.execute(text(sql), {"username":new_username, "password":hash_value,"role":user_role})
         db.session.commit()
 
-        return redirect('/')
+        return render_template('new_user.html')
 
     return render_template('create_user.html')
 
@@ -69,7 +70,7 @@ def new():
     try:
         if users.is_admin():
             allow = True
-        elif users.is_user() and users.user_id() == session.get("user_id", None):
+        elif users.is_user():
             allow = True
     except KeyError:
         pass  

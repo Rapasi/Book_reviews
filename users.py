@@ -25,13 +25,13 @@ def logout():
 
 def is_admin():
     try:
-        return (session["user_id"] is 0)
+        return (session["user_role"] is 0)
     except KeyError:
         return False
 
 def is_user():
     try:
-        return (session["user_id"] is 1)
+        return (session["user_role"] is 1)
     except KeyError:
         return False
 
