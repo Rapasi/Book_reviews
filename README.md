@@ -17,4 +17,9 @@
 ### Currently implemented features:
 - User can create an account.
 - User can leave a review if they are logged in.
-- The 5 most resent reviews are displayed on the front page (This is empty if no reviews are added to left).
+- The 5 most resent reviews are displayed on the front page (This is empty if no reviews are added ).
+
+### To Do:
+- Allow admins to delete reviews.
+- Implement the search method where user can search for reviews.
+- Allow user to delete their own reviews. 
