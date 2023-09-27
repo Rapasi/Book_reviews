@@ -58,11 +58,24 @@ def create_user():
     return render_template('create_user.html')
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def index():
-    result = db.session.execute(text("SELECT * FROM reviews"))
-    reviews = result.fetchall()
-    return render_template("index.html", count=len(reviews), messages=get_list(5)) 
+    order_option = request.form.get('order_option', None)
+    show_all = request.form.get('show_all', None)
+    order = None
+    if order_option=="name":
+        order="book_name"
+    elif order_option=="author":
+        order="book_author"
+    elif order_option=="rating":
+        order="rating" 
+    if show_all:
+        session['show_all'] = not session.get('show_all', False)
+    entries=None 
+    if not session.get('show_all', False):
+        entries = 5
+    reviews = get_list(entries, order)
+    return render_template("index.html", messages=reviews)
 
 @app.route("/new")
 def new():
@@ -98,3 +111,12 @@ def send():
     db.session.execute(text(sql), {"book_content":book_content,"author_content":author_content,"user_id":user_id,"review":review,"book_rating":book_rating})
     db.session.commit()
     return redirect("/")
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        query = request.form.get('query')
+        sql = "SELECT id, book_name, book_author, review_text, rating FROM reviews WHERE book_name ILIKE :query OR book_author ILIKE :query OR review_text ILIKE :query"
+        search_results = db.session.execute(text(sql), {'query': f"%{query}%"}).fetchall()
+        return render_template('search.html', search_results=search_results)
+    return render_template('search.html')
