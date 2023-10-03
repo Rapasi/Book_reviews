@@ -11,5 +11,6 @@ CREATE TABLE reviews (
     user_id INTEGER REFERENCES users,
     review_time TIMESTAMP,
     review_text TEXT,
-    rating INTEGER
+    rating INTEGER,
+    visible BOOLEAN DEFAULT TRUE
 );

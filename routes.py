@@ -120,3 +120,21 @@ def search():
         search_results = db.session.execute(text(sql), {'query': f"%{query}%"}).fetchall()
         return render_template('search.html', search_results=search_results)
     return render_template('search.html')
+
+
+@app.route('/delete/<int:review_id>', methods=['POST'])
+def delete_review(review_id):
+    print(review_id)
+    if 'user_id' not in session:
+        return redirect("/login") 
+    result = db.session.execute(text("SELECT user_id FROM reviews WHERE id=:id"), {"id": review_id})
+    result = result.fetchone()
+    if not result or session['user_role'] == 0:
+        return redirect("/login")
+    print(session['user_id'])
+
+    if session['user_id'] == result[0] or session['user_role'] == 0:
+        db.session.execute(text(f"UPDATE reviews SET visible=FALSE WHERE id={review_id};"))
+        db.session.commit()
+
+    return redirect('/')
