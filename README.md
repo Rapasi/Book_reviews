@@ -13,15 +13,15 @@
 - Create a new database and add tables using "psql -d <tietokannan-nimi> < schema.sql".
 - Create a .env file inside cloned repository and add DATABASE_URL and SECRET_KEY variables. DATABASE_URL should be the same you used for your project. For example DATABASE_URL=postgresql:///user. Depending on your PosgoreSQL installation it can be something different. This works for me DATABASE_URL=postgresql://username:password@localhost/database_name. The SECRET_KEY should be created using instruction on https://hy-tsoha.github.io/materiaali/osa-2/#istunnot-ja-kirjautuminen. Please also read the instructions on https://hy-tsoha.github.io/materiaali/vertaisarviointi/.
 - After these step the app can be run from terminal using "flask run".
-
+- When testing the application, please create at least couple of reviews to test all functionalities.
 ### Currently implemented features:
 - User can create an account.
 - User can leave a review if they are logged in.
-- The 5 most recent reviews are displayed on the front page (This is empty if no reviews are added ).
+- The 5 most recent reviews are displayed on the front page (This is empty if no reviews are added).
 - search method where user can search for reviews.
 - Users can delete their reviews and admin can delete any reviews.
   - Please note that admin account can only be created by directly inserting it to database.
 - Users can save their favorite revies.  
 
 ### To Do:
-- Add an options for everyone to give thumbs up for a review. 
+- Add styling for pages. 
