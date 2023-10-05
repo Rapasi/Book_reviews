@@ -19,7 +19,9 @@
 - User can leave a review if they are logged in.
 - The 5 most recent reviews are displayed on the front page (This is empty if no reviews are added ).
 - search method where user can search for reviews.
+- Users can delete their reviews and admin can delete any reviews.
+  - Please note that admin account can only be created by directly inserting it to database.
+- Users can save their favorite revies.  
 
 ### To Do:
-- Allow admins to delete reviews.
-- Allow user to delete their own reviews. 
+- Add an options for everyone to give thumbs up for a review. 
