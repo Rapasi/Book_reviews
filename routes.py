@@ -60,6 +60,7 @@ def create_user():
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
+    show_all =None
     order_option = request.form.get('order_option', None)
     show_all = request.form.get('show_all', None)
     order = None
@@ -124,17 +125,45 @@ def search():
 
 @app.route('/delete/<int:review_id>', methods=['POST'])
 def delete_review(review_id):
-    print(review_id)
+
     if 'user_id' not in session:
         return redirect("/login") 
+    
     result = db.session.execute(text("SELECT user_id FROM reviews WHERE id=:id"), {"id": review_id})
     result = result.fetchone()
+    
     if not result or session['user_role'] == 0:
         return redirect("/login")
-    print(session['user_id'])
-
+    
     if session['user_id'] == result[0] or session['user_role'] == 0:
         db.session.execute(text(f"UPDATE reviews SET visible=FALSE WHERE id={review_id};"))
         db.session.commit()
 
     return redirect('/')
+
+@app.route('/favorite/<int:review_id>', methods=['POST'])
+def favorite_review(review_id):
+    if 'user_id' not in session:
+        return 'You must be logged in to save a favorite review.', 401
+
+    db.session.execute(text(f"INSERT INTO favorites (user_id, review_id) VALUES ({session['user_id']},{review_id})"))
+    db.session.commit()
+
+    return redirect('/')
+
+@app.route('/favorites')
+def show_favorites():
+    if 'user_id' not in session:
+        return 'You must be logged in to see your favorites.', 401
+
+    user_id = session['user_id']
+    sql=text(f"""
+    SELECT R.id, R.book_name, R.book_author, R.review_text, R.rating, R.review_time 
+    FROM reviews R
+    INNER JOIN favorites f ON f.review_id = R.id
+    WHERE f.user_id = {user_id} AND R.visible = TRUE
+    """)
+    result=db.session.execute(sql)
+
+    messages = result.fetchall()
+    return render_template('favorites.html', messages=messages)

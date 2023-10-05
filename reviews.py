@@ -15,5 +15,4 @@ def get_list(entries=None, order=None):
             sql += " LIMIT :limit"
     params = {'limit': entries} if entries else {}
     result = db.session.execute(text(sql), params)
-    print(sql)
     return result.fetchall()

@@ -2,8 +2,10 @@
 <html>
 <head>
     <title>Create New User</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
+    {% include 'menu.html' %}
     <form action="/create_user" method="POST">
         <p>Username:<br>
         <input type="text" name="new_username" required></p>

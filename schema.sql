@@ -14,3 +14,9 @@ CREATE TABLE reviews (
     rating INTEGER,
     visible BOOLEAN DEFAULT TRUE
 );
+
+CREATE TABLE favorites (
+    user_id INTEGER REFERENCES users,
+    review_id INTEGER REFERENCES reviews,
+    PRIMARY KEY (user_id, review_id)
+);

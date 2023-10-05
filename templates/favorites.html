@@ -1,0 +1,31 @@
+{% if messages %}
+    <hr>
+    {% for message in messages %}
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 10%;"><i>The Book:</i></th>
+                    <th style="width: 10%;"><i>The Author:</i></th>
+                    <th style="width: 5%;"><i>Rating:</i></th>
+                    <th style="text-align: left; padding-left: 20px;"><i>Review:</i></th>
+                    <th style="width: 10%;"><i>Time:</i></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ message[1] }}</td>
+                    <td>{{ message[2] }}</td>
+                    <td>{{ message[4] }}</td>
+                    <td style="padding-left: 20px;">{{ message[3] }}</td>
+                    <td>{{ message[5].strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                </tr>
+            </tbody>
+        </table>
+    <hr>
+    {% endfor %}
+{% else %}
+    <p>No favorites saved.</p>
+{% endif %}
+<div style="margin-top: 1em;">
+    <a href="/">Back to the front page</a>
+<div>
