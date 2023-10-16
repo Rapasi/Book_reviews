@@ -18,10 +18,8 @@
 - User can create an account.
 - User can leave a review if they are logged in.
 - The 5 most recent reviews are displayed on the front page (This is empty if no reviews are added).
-- search method where user can search for reviews.
+- Reviews can be ordered by rating, book's names or the authors. 
+- Search method where user can search for reviews.
 - Users can delete their reviews and admin can delete any reviews.
   - Please note that admin account can only be created by directly inserting it to database.
 - Users can save their favorite revies.  
-
-### To Do:
-- Add styling for pages. 
