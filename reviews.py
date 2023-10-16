@@ -6,10 +6,13 @@ def get_list(entries=None, order=None):
     if entries is None and order is None:
         sql = f"{base_sql} ORDER BY R.review_time DESC"
     else:
-        if order:
-            sql = f"{base_sql} ORDER BY R.{order} DESC"
-        else:
+        if not order:
             sql = f"{base_sql} ORDER BY R.review_time DESC"
+        else:
+            if order=="book_name" or order=="book_author":
+                sql = f"{base_sql} ORDER BY R.{order} ASC"
+            else:
+                sql = f"{base_sql} ORDER BY R.{order} DESC"
 
         if entries:
             sql += " LIMIT :limit"

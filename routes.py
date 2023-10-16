@@ -13,7 +13,7 @@ from reviews import get_list
 @app.route("/login", methods=["get", "post"])
 def login():
     if request.method == "GET":
-        print(session['username'])
+        print(session["username"])
         return render_template("login.html")
     if request.method == "POST":
         username = request.form["username"]
@@ -28,7 +28,7 @@ def logout():
     users.logout()
     return redirect("/login")
 
-@app.route("/create_user", methods=['GET', 'POST'])
+@app.route("/create_user", methods=["GET", "POST"])
 def create_user():
     if request.method == "POST":
         new_username = request.form["new_username"]
@@ -53,16 +53,16 @@ def create_user():
         db.session.execute(text(sql), {"username":new_username, "password":hash_value,"role":user_role})
         db.session.commit()
 
-        return render_template('new_user.html')
+        return render_template("new_user.html")
 
-    return render_template('create_user.html')
+    return render_template("create_user.html")
 
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def index():
     show_all =None
-    order_option = request.form.get('order_option', None)
-    show_all = request.form.get('show_all', None)
+    order_option = request.form.get("order_option", None)
+    show_all = request.form.get("show_all", None)
     order = None
     if order_option=="name":
         order="book_name"
@@ -71,9 +71,9 @@ def index():
     elif order_option=="rating":
         order="rating" 
     if show_all:
-        session['show_all'] = not session.get('show_all', False)
+        session["show_all"] = not session.get("show_all", False)
     entries=None 
-    if not session.get('show_all', False):
+    if not session.get("show_all", False):
         entries = 5
     reviews = get_list(entries, order)
     return render_template("index.html", messages=reviews)
@@ -113,50 +113,50 @@ def send():
     db.session.commit()
     return redirect("/")
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route("/search", methods=["GET", "POST"])
 def search():
-    if request.method == 'POST':
-        query = request.form.get('query')
+    if request.method == "POST":
+        query = request.form.get("query")
         sql = "SELECT id, book_name, book_author, review_text, rating FROM reviews WHERE book_name ILIKE :query OR book_author ILIKE :query OR review_text ILIKE :query"
-        search_results = db.session.execute(text(sql), {'query': f"%{query}%"}).fetchall()
-        return render_template('search.html', search_results=search_results)
-    return render_template('search.html')
+        search_results = db.session.execute(text(sql), {"query": f"%{query}%"}).fetchall()
+        return render_template("search.html", search_results=search_results)
+    return render_template("search.html")
 
 
-@app.route('/delete/<int:review_id>', methods=['POST'])
+@app.route("/delete/<int:review_id>", methods=["POST"])
 def delete_review(review_id):
 
-    if 'user_id' not in session:
+    if "user_id" not in session:
         return redirect("/login") 
     
     result = db.session.execute(text("SELECT user_id FROM reviews WHERE id=:id"), {"id": review_id})
     result = result.fetchone()
     
-    if not result or session['user_role'] == 0:
+    if not result or session["user_role"] == 0:
         return redirect("/login")
     
-    if session['user_id'] == result[0] or session['user_role'] == 0:
+    if session["user_id"] == result[0] or session["user_role"] == 0:
         db.session.execute(text(f"UPDATE reviews SET visible=FALSE WHERE id={review_id};"))
         db.session.commit()
 
-    return redirect('/')
+    return redirect("/")
 
-@app.route('/favorite/<int:review_id>', methods=['POST'])
+@app.route("/favorite/<int:review_id>", methods=["POST"])
 def favorite_review(review_id):
-    if 'user_id' not in session:
-        return 'You must be logged in to save a favorite review.', 401
+    if "user_id" not in session:
+        return "You must be logged in to save a favorite review.", 401
 
     db.session.execute(text(f"INSERT INTO favorites (user_id, review_id) VALUES ({session['user_id']},{review_id})"))
     db.session.commit()
 
-    return redirect('/')
+    return redirect("/")
 
-@app.route('/favorites')
+@app.route("/favorites")
 def show_favorites():
-    if 'user_id' not in session:
-        return 'You must be logged in to see your favorites.', 401
+    if "user_id" not in session:
+        return "You must be logged in to see your favorites.", 401
 
-    user_id = session['user_id']
+    user_id = session["user_id"]
     sql=text(f"""
     SELECT R.id, R.book_name, R.book_author, R.review_text, R.rating, R.review_time 
     FROM reviews R
@@ -166,4 +166,4 @@ def show_favorites():
     result=db.session.execute(sql)
 
     messages = result.fetchall()
-    return render_template('favorites.html', messages=messages)
+    return render_template("favorites.html", messages=messages)
