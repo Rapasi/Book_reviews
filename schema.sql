@@ -1,13 +1,23 @@
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    role INTEGER
+);
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE,
     password TEXT,
-    role INTEGER
+    role_id INTEGER REFERENCES roles
 );
+
+CREATE TABLE books (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    author TEXT
+);
+
 CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
-    book_name TEXT,
-    book_author TEXT,
     user_id INTEGER REFERENCES users,
     review_time TIMESTAMP,
     review_text TEXT,
@@ -20,3 +30,4 @@ CREATE TABLE favorites (
     review_id INTEGER REFERENCES reviews,
     PRIMARY KEY (user_id, review_id)
 );
+
