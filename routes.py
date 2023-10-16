@@ -13,7 +13,6 @@ from reviews import get_list
 @app.route("/login", methods=["get", "post"])
 def login():
     if request.method == "GET":
-        print(session["username"])
         return render_template("login.html")
     if request.method == "POST":
         username = request.form["username"]
@@ -49,8 +48,9 @@ def create_user():
         # Hash the password before storing it (use a strong hash function like bcrypt)
         hash_value = generate_password_hash(new_password)
         
-        sql = "INSERT INTO users (username, password,role) VALUES (:username, :password,:role)"
-        db.session.execute(text(sql), {"username":new_username, "password":hash_value,"role":user_role})
+        sql = "INSERT INTO users (username, password) VALUES (:username, :password)"
+        db.session.execute(text(sql), {"username":new_username, "password":hash_value})
+        db.session.execute(text("INSERT INTO roles (role) VALUES (:role)"), {"role":user_role})
         db.session.commit()
 
         return render_template("new_user.html")
@@ -65,9 +65,9 @@ def index():
     show_all = request.form.get("show_all", None)
     order = None
     if order_option=="name":
-        order="book_name"
+        order="name"
     elif order_option=="author":
-        order="book_author"
+        order="author"
     elif order_option=="rating":
         order="rating" 
     if show_all:
@@ -76,6 +76,8 @@ def index():
     if not session.get("show_all", False):
         entries = 5
     reviews = get_list(entries, order)
+    for review in reviews:
+        print(review,'\n')
     return render_template("index.html", messages=reviews)
 
 @app.route("/new")
@@ -108,8 +110,9 @@ def send():
         return render_template("error.html",error=error,error_message="Review is too long. The maximum legth is 500 characters.")
     user_id=session["user_id"]
     now=datetime.now() 
-    sql = "INSERT INTO reviews (book_name,book_author,user_id,review_time,review_text,rating) VALUES (:book_content, :author_content,:user_id,NOW(),:review,:book_rating)"
-    db.session.execute(text(sql), {"book_content":book_content,"author_content":author_content,"user_id":user_id,"review":review,"book_rating":book_rating})
+    sql = "INSERT INTO reviews (user_id,review_time,review_text,rating) VALUES (:user_id,NOW(),:review,:book_rating)"
+    db.session.execute(text(sql), {"user_id":user_id,"review":review,"book_rating":book_rating})
+    db.session.execute(text("INSERT INTO books (name,author) VALUES (:book_content,:author_content)"),{"book_content":book_content,"author_content":author_content})
     db.session.commit()
     return redirect("/")
 
@@ -117,7 +120,7 @@ def send():
 def search():
     if request.method == "POST":
         query = request.form.get("query")
-        sql = "SELECT id, book_name, book_author, review_text, rating FROM reviews WHERE book_name ILIKE :query OR book_author ILIKE :query OR review_text ILIKE :query"
+        sql = "SELECT r.id, B.name, B.author, r.review_text, r.rating FROM reviews r, books B WHERE B.name ILIKE :query OR B.author ILIKE :query OR r.review_text ILIKE :query"
         search_results = db.session.execute(text(sql), {"query": f"%{query}%"}).fetchall()
         return render_template("search.html", search_results=search_results)
     return render_template("search.html")
@@ -154,12 +157,14 @@ def favorite_review(review_id):
 @app.route("/favorites")
 def show_favorites():
     if "user_id" not in session:
-        return "You must be logged in to see your favorites.", 401
+        return redirect("/login")
+    
 
     user_id = session["user_id"]
     sql=text(f"""
-    SELECT R.id, R.book_name, R.book_author, R.review_text, R.rating, R.review_time 
+    SELECT R.id, B.name as book_name, B.author, R.review_text, R.rating, R.review_time 
     FROM reviews R
+    INNER JOIN books B ON B.id = R.id
     INNER JOIN favorites f ON f.review_id = R.id
     WHERE f.user_id = {user_id} AND R.visible = TRUE
     """)
