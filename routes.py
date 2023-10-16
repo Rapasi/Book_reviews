@@ -18,7 +18,6 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         if not users.login(username,password):
-            flash("Username does not exist")
             return redirect("/login")   
     return redirect("/")
 
@@ -38,14 +37,11 @@ def create_user():
         existing_user = result.fetchone()
         
         if existing_user:
-            flash("Username already exists")
-            return redirect("/create_user")
-
-        if new_password != confirm_password:
-            flash("Passwords do not match")
             return redirect("/create_user")
         
-        # Hash the password before storing it (use a strong hash function like bcrypt)
+        if new_password != confirm_password:
+            return redirect("/create_user")
+        
         hash_value = generate_password_hash(new_password)
         
         sql = "INSERT INTO users (username, password) VALUES (:username, :password)"
